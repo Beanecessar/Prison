@@ -13,7 +13,7 @@ public:
 	void compete(char* path);
 
 protected:
-	game_status status;
+	solo_game_status status;
 	std::vector<std::string> strategies;
 	std::vector<int> score;
 	std::mutex lock;
@@ -22,7 +22,7 @@ protected:
 	void traversal_windows(const std::string path);
 };
 
-class gang_game :public solo_game {
+class gang_game :public game {
 public:
 
 };

@@ -18,7 +18,7 @@ prisoner::prisoner() {
 	stg_index = 0;
 }
 
-prisoner::prisoner(game_status* sts) {
+prisoner::prisoner(solo_game_status* sts) {
 	last_output = CHOICES::RANDOM;
 	status = sts;
 
@@ -26,7 +26,7 @@ prisoner::prisoner(game_status* sts) {
 	stg_index = 0;
 }
 
-prisoner::prisoner(const std::string stg, game_status* sts) {
+prisoner::prisoner(const std::string stg, solo_game_status* sts) {
 	last_output = CHOICES::RANDOM;
 	status = sts;
 

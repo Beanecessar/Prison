@@ -9,7 +9,7 @@
 #include <io.h>
 
 int solo_game::compete(std::string stg1, std::string stg2) {
-	game_status p1_status, p2_status;
+	solo_game_status p1_status, p2_status;
 	prisoner prisoner1(stg1, &p1_status);
 	prisoner prisoner2(stg1, &p2_status);
 

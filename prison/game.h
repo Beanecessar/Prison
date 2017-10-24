@@ -21,11 +21,22 @@ public:
 	};
 };
 
-class game_status :public game {
+class solo_game_status :public game {
 public:
-	game_status();
+	solo_game_status();
 
 	OUTS last_outcome;
-	int all_outcomes_A, all_outcomes_B, all_outcomes_C, all_outcomes_W, all_outcomes_X, all_outcomes_Y, all_outcomes_Z, iterations, myscore;
+	int  all_outcomes_W, all_outcomes_X, all_outcomes_Y, all_outcomes_Z, iterations, myscore;
+	void reset();
+};
+
+class gang_game_status :public solo_game_status {
+public:
+	gang_game_status();
+
+	int all_outcomes_A, all_outcomes_B, all_outcomes_C;
+	int betray_num, silence_num;
+	CHOICES choice_list[5];
+
 	void reset();
 };

@@ -8,9 +8,9 @@ class prisoner :public game {
 public:
 	prisoner();
 
-	prisoner(game_status* sts);
+	prisoner(solo_game_status* sts);
 
-	prisoner(std::string stg, game_status* sts);
+	prisoner(std::string stg, solo_game_status* sts);
 
 	~prisoner();
 
@@ -49,7 +49,7 @@ protected:
 	unsigned int stc_index;
 	unsigned int stg_index;
 
-	game_status* status;
+	solo_game_status* status;
 	int* myscore;
 
 	enum SYMBOLS {
