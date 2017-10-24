@@ -1,8 +1,8 @@
 // prison.cpp : Defines the entry point for the console application.
 //
 #include "stdafx.h"
-#include "interpretator.cpp"
-#include "generator.cpp"
+#include "generator.h"
+#include "game_holder.h"
 
 
 int main()
@@ -12,7 +12,7 @@ int main()
 	g.start_generate("D:/strategies/");
 
 	//interpretator test
-	game_holder round;
+	solo_game round;
 	round.compete("D:/strategies/");
 
 	return 0;
