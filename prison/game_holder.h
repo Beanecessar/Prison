@@ -10,19 +10,27 @@ public:
 
 	void comparator(int count, int all);
 
-	void compete(char* path);
+	void compete(std::string path);
 
-protected:
-	solo_game_status status;
-	std::vector<std::string> strategies;
+private:
 	std::vector<int> score;
+
 	std::mutex lock;
+
 	bool multi_threading = false;
 
-	void traversal_windows(const std::string path);
+protected:
+	std::vector<std::string> strategies;
+
+	void traversal_windows(const std::string path); //traversal given path and load all file into [strategies]
 };
 
-class gang_game :public game {
+class gang_game :public solo_game {
 public:
+	void compete(std::string path);
 
+	void set_spy(bool b);
+
+private:
+	bool spy_flag;
 };

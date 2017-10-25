@@ -25,64 +25,59 @@ int solo_game::compete(std::string stg1, std::string stg2) {
 		prisoner2.feedback(prisoner1.output());
 	}
 
-	if (!multi_threading) {
-		std::cout << "prisoner1: " << stg1 << " | " << "prisoner2: " << stg2 << std::endl;
-		std::cout << "prisoner1: " << p1_status.myscore << " | ";
-		std::cout << "prisoner2: " << p2_status.myscore << " | ";
-	}
+	std::cout << "prisoner1: " << stg1 << " | " << "prisoner2: " << stg2 << std::endl;
+	std::cout << "prisoner1: " << p1_status.myscore << " | ";
+	std::cout << "prisoner2: " << p2_status.myscore << " | ";
 
 	if (p1_status.myscore < p2_status.myscore) {
-		if (!multi_threading) {
-			std::cout << "prison1 win." << std::endl;
-		}
+		std::cout << "prison1 win." << std::endl;
 		return 1;
 	}
 	else if (p1_status.myscore > p2_status.myscore) {
-		if (!multi_threading) {
-			std::cout << "prison2 win." << std::endl;
-		}
+		std::cout << "prison2 win." << std::endl;
 		return 2;
 	}
 	else {
-		if (!multi_threading) {
-			std::cout << "draw." << std::endl;
-		}
+		std::cout << "draw." << std::endl;
 		return 0;
 	}
 }
 
 void solo_game::comparator(int count, int all) {
 	int temp;
-	std::string stg1, stg2;
+	std::string stg1, stg2; 
+	solo_game_status p1_status, p2_status;
+
+	prisoner prisoner1(&p1_status);
+	prisoner prisoner2(&p2_status);
 
 	for (size_t i = count; i < strategies.size() - 1; i += all) {
 		for (size_t j = i + 1; j < strategies.size(); ++j) {
 			stg1 = strategies[i];
 			stg2 = strategies[j];
-			temp = compete(stg1, stg2);
+			prisoner1.read_strategy(stg1);
+			prisoner2.read_strategy(stg2);
+			if (prisoner1.ready() && prisoner2.ready()) {
+				for (unsigned i = 0; i < 200; ++i) {
+					prisoner1.execute_strategy();
+					prisoner2.execute_strategy();
+
+					prisoner1.feedback(prisoner2.output());
+					prisoner2.feedback(prisoner1.output());
+				}
+			}
+			else
+				continue;
 
 			std::lock_guard<std::mutex> guard(lock);
 
-			switch (temp)
-			{
-			case 0:
-				score[i] += 1;
-				score[j] += 1;
-				break;
-			case 1:
-				score[i] += 2;
-				break;
-			case 2:
-				score[j] += 2;
-				break;
-			default:
-				break;
-			}
+			score[i] += p1_status.myscore;
+			score[j] += p2_status.myscore;
 		}
 	}
 }
 
-void solo_game::compete(char* path) {
+void solo_game::compete(std::string path) {
 	int best, max_score;
 
 	traversal_windows(path);
@@ -109,6 +104,7 @@ void solo_game::compete(char* path) {
 	t6.join();
 	t7.join();
 
+	multi_threading = false;
 	max_score = 0;
 	best = 0;
 	for (unsigned i = 0; i < score.size(); i++) {
@@ -134,4 +130,39 @@ void solo_game::traversal_windows(const std::string path) {
 		if (fileinfo.name[0] != '.')
 			strategies.push_back(path + fileinfo.name);
 	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void gang_game::compete(std::string path) {
+	gang_member g1_member[5], g2_member[5];
+	gang_game_status g1_status, g2_status;
+	gang purple(&g1_status), magenta(&g2_status);
+
+	traversal_windows(path);
+
+	if (strategies.size() == 10) {
+		for (unsigned i = 0; i < 5; ++i) {
+			g1_member[i].read_strategy(strategies[i]);
+			g2_member[i].read_strategy(strategies[i + 5]);
+		}
+
+		purple.set_all_member(g1_member);
+		magenta.set_all_member(g2_member);
+
+		for (unsigned i = 0; i < 200; ++i) {
+			purple.execute_strategies();
+			magenta.execute_strategies();
+
+			purple.feedback(&g2_status);
+			magenta.feedback(&g1_status);
+		}
+		std::cout << "purple hand gang: " << g1_status.myscore << " | " << g2_status.myscore << std::endl;
+	}
+	else
+		std::cout << "invalid strategies path, too much or less file." << std::endl;
+}
+
+void gang_game::set_spy(bool b) {
+	spy_flag = b;
 }

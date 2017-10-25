@@ -8,12 +8,15 @@
 int main()
 {
 	//generator test
-	generator g;
-	g.start_generate("D:/strategies/");
+	/*generator g;
+	g.start_generate("D:/strategies/");*/
 
 	//interpretator test
-	solo_game round;
-	round.compete("D:/strategies/");
+	/*solo_game round;
+	round.compete("D:/strategies/");*/
+
+	gang_game gg;
+	gg.compete("D:/strategies/");
 
 	return 0;
 }

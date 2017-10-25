@@ -623,64 +623,137 @@ void prisoner::sentence_analyse(std::string &sentence) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+gang_member::gang_member() {
+	last_output = CHOICES::RANDOM;
+
+	stc_index = 0;
+	stg_index = 0;
+}
+
+gang_member::gang_member(std::string stg) {
+	last_output = CHOICES::RANDOM;
+
+	stc_index = 0;
+	stg_index = 0;
+
+	read_strategy(stg);
+}
+
+void gang_member::set_status(gang_game_status* sts) {
+	status = sts;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//gang_spy
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 gang::gang() {
-	betray_num = 0;
-	silence_num = 0;
+	status = NULL;
+	spy_flag = false;
 }
 
-gang::gang(gang_member* gms) {
-	betray_num = 0;
-	silence_num = 0;
+gang::gang(gang_game_status* sts) {
+	status = sts;
+	spy_flag = false;
+}
+
+gang::gang(gang_member* gms, gang_game_status* sts) {
+	status = sts;
+	spy_flag = false;
 
 	if (sizeof(gms) == 5) {
 		for (unsigned i = 0; i < 5; ++i) {
-			member_list[i] = *(gms + i);
+			member_list[i] = (gms + i);
 		}
 	}
+}
+
+void gang::set_member(unsigned i, gang_member* m) {
+	member_list[i] = m;
+	member_list[i]->set_status(status);
 }
 
 void gang::set_all_member(gang_member* gms) {
 	if (sizeof(gms) == 5) {
 		for (unsigned i = 0; i < 5; ++i) {
-			member_list[i] = *(gms + i);
+			member_list[i] = (gms + i);
+			member_list[i]->set_status(status);
 		}
 	}
 }
 
 int gang::get_betray_num() {
-	return betray_num;
+	return status->betray_num;
 }
 
 int gang::get_silence_num() {
-	return silence_num;
+	return status->silence_num;
 }
 
 bool gang::check_ready() {
 	bool ready = true;
 
 	for (unsigned i = 0; i < 5; ++i) {
-		if (!member_list[i].ready())
+		if (!member_list[i]->ready())
 			ready = false;
 	}
 
 	return ready;
 }
 
-void gang::execute_strategis(){
+void gang::execute_strategies(){
 	CHOICES temp;
 
-	betray_num = 0;
-	silence_num = 0;
+	status->betray_num = 0;
+	status->silence_num = 0;
 
 	for (unsigned i; i < 5; ++i) {
-		member_list[i].execute_strategy();
-		temp = member_list[i].output();
+		member_list[i]->execute_strategy();
+		temp = member_list[i]->output();
+		status->choice_list[i] = temp;
 		if (temp == CHOICES::BETRAY) {
-			betray_num += 1;
+			status->betray_num += 1;
 		}
 		else
-			silence_num += 1;
+			status->silence_num += 1;
+	}
+}
+
+void gang::feedback(gang_game_status* sts) {
+	if (status->betray_num == 5 && sts->betray_num == 5) {
+		status->last_outcome = OUTS::Z;
+		status->myscore += 4;
+		status->all_outcomes_Z += 1;
+	}
+	else if (status->betray_num == 5 && sts->silence_num == 5) {
+		status->last_outcome = OUTS::Y;
+		status->all_outcomes_Y += 1;
+	}
+	else if (status->silence_num == 5 && sts->betray_num == 5) {
+		status->last_outcome = OUTS::X;
+		status->myscore += 5;
+		status->all_outcomes_X += 1;
+	}
+	else if (status->silence_num == 5 && sts->silence_num == 5) {
+		status->last_outcome = OUTS::W;
+		status->myscore += 2;
+		status->all_outcomes_W += 1;
+	}
+	else if (status->betray_num > sts->betray_num) {
+		status->last_outcome = OUTS::A;
+		status->myscore += 2.5;
+		status->all_outcomes_A += 1;
+	}
+	else if (status->betray_num < sts->betray_num) {
+		status->last_outcome = OUTS::B;
+		status->myscore += 3;
+		status->all_outcomes_B += 1;
+	}
+	else if (status->betray_num = sts->betray_num) {
+		status->last_outcome = OUTS::C;
+		status->myscore += 2;
+		status->all_outcomes_C += 1;
 	}
 }

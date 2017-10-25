@@ -190,6 +190,20 @@ protected:
 };
 
 class gang_member :public prisoner {
+public:
+	gang_member();
+
+	gang_member(std::string stg);
+
+	void set_status(gang_game_status* sts);
+
+protected:
+	gang_game_status* status;
+
+	
+};
+
+class gang_spy :public gang_member {
 
 };
 
@@ -197,7 +211,9 @@ class gang :public game {
 public:
 	gang();
 
-	gang(gang_member* gms);
+	gang(gang_game_status* sts);
+
+	gang(gang_member* gms, gang_game_status* sts);
 
 	int get_betray_num();
 
@@ -207,12 +223,18 @@ public:
 
 	void set_all_member(gang_member* gms);
 
+	void set_member(unsigned i, gang_member* m);
+
 	bool check_ready(); //check if each member read the strategy correctly
 
-	void execute_strategis();
+	void execute_strategies();
+
+	void feedback(gang_game_status* sts);
 
 private:
-	int betray_num, silence_num;
+	gang_game_status* status;
 
-	gang_member member_list[5];
+	gang_member* member_list[5];
+
+	bool spy_flag;
 };
