@@ -11,7 +11,6 @@
 
 prisoner::prisoner() {
 	last_output = CHOICES::RANDOM;
-	myscore = NULL;
 	status = NULL;
 
 	stc_index = 0;
@@ -274,7 +273,7 @@ int prisoner::advance_value(SYMBOLS value) {//match VAR or NUM and return value
 		else if (stc.kwd_vect[stc_index] == "ITERATIONS")
 			temp = status->iterations;
 		else if (stc.kwd_vect[stc_index] == "MYSCORE")
-			temp = *myscore;
+			temp = status->myscore;
 		else {
 			error_handling(ERRORS::VAR_MISMATCHING);
 			return -1;
@@ -641,6 +640,121 @@ gang_member::gang_member(std::string stg) {
 
 void gang_member::set_status(gang_game_status* sts) {
 	status = sts;
+}
+
+int gang_member::advance_value(SYMBOLS value) {//match VAR or NUM and return value
+	int temp;
+
+	switch (value)
+	{
+	case SYMBOLS::NUM:
+		try
+		{
+			temp = stoi(stc.kwd_vect[stc_index]);
+		}
+		catch (const std::invalid_argument) {
+			error_handling(ERRORS::INVALID_NUM);
+			return -1;
+		}
+		catch (const std::out_of_range) {
+			error_handling(ERRORS::TOO_BIG_NUM);
+			return -1;
+		}
+		break;
+
+	case SYMBOLS::VAR:
+		if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_W")
+			temp = status->all_outcomes_W;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_X")
+			temp = status->all_outcomes_X;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Y")
+			temp = status->all_outcomes_Y;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Z")
+			temp = status->all_outcomes_Z;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_A")
+			temp = status->all_outcomes_A;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_B")
+			temp = status->all_outcomes_B;
+		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_C")
+			temp = status->all_outcomes_C;
+		else if (stc.kwd_vect[stc_index] == "ITERATIONS")
+			temp = status->iterations;
+		else if (stc.kwd_vect[stc_index] == "MYSCORE")
+			temp = status->myscore;
+		else {
+			error_handling(ERRORS::VAR_MISMATCHING);
+			return -1;
+		}
+		break;
+
+	default:
+		error_handling(ERRORS::VALUE_MISMATCHING);
+		return -1;
+		break;
+	}
+	++stc_index;
+
+	return temp;
+}
+
+game::OUTS gang_member::advance_outcome(SYMBOLS out) {//match OUT and return outcome
+	OUTS temp = OUTS::N;
+
+	if (stc.sym_vect[stc_index] == SYMBOLS::OUT) {
+		if (stc.kwd_vect[stc_index] == "LASTOUTCOME")
+			temp = status->last_outcome;
+		else if (stc.kwd_vect[stc_index] == "W")
+			temp = OUTS::W;
+		else if (stc.kwd_vect[stc_index] == "X")
+			temp = OUTS::X;
+		else if (stc.kwd_vect[stc_index] == "Y")
+			temp = OUTS::Y;
+		else if (stc.kwd_vect[stc_index] == "Z")
+			temp = OUTS::Z;
+		else if (stc.kwd_vect[stc_index] == "A")
+			temp = OUTS::A;
+		else if (stc.kwd_vect[stc_index] == "B")
+			temp = OUTS::B;
+		else if (stc.kwd_vect[stc_index] == "C")
+			temp = OUTS::C;
+		else if (stc.kwd_vect[stc_index] == "w") {
+			temp = OUTS::W;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "x") {
+			temp = OUTS::X;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "y") {
+			temp = OUTS::Y;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "z") {
+			temp = OUTS::Z;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "a") {
+			temp = OUTS::A;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "b") {
+			temp = OUTS::B;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else if (stc.kwd_vect[stc_index] == "c") {
+			temp = OUTS::C;
+			warning_handling(WARNINGS::LOWERCASE_OUTCOME);
+		}
+		else
+			error_handling(ERRORS::OUTCOME_MISSMATCHING);
+
+		++stc_index;
+		return temp;
+	}
+	else
+		error_handling(ERRORS::OUTCOME_MISSMATCHING);
+
+	return OUTS::N;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,6 @@ protected:
 	unsigned int stg_index;
 
 	solo_game_status* status;
-	int* myscore;
 
 	enum SYMBOLS {
 		EQU,
@@ -196,6 +195,10 @@ public:
 	gang_member(std::string stg);
 
 	void set_status(gang_game_status* sts);
+
+	int gang_member::advance_value(SYMBOLS value);
+
+	game::OUTS gang_member::advance_outcome(SYMBOLS out);
 
 protected:
 	gang_game_status* status;
