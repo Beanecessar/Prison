@@ -241,15 +241,15 @@ void prisoner::advance(SYMBOLS sym) {//match current symbol and move forward
 	//else throw ERROR
 }
 
-int prisoner::advance_value(SYMBOLS value) {//match VAR or NUM and return value
-	int temp;
+float prisoner::advance_value(SYMBOLS value) {//match VAR or NUM and return value
+	float temp;
 
 	switch (value)
 	{
 	case SYMBOLS::NUM:
 		try
 		{
-			temp = stoi(stc.kwd_vect[stc_index]);
+			temp = (float)stoi(stc.kwd_vect[stc_index]);
 		}
 		catch (const std::invalid_argument) {
 			error_handling(ERRORS::INVALID_NUM);
@@ -263,15 +263,15 @@ int prisoner::advance_value(SYMBOLS value) {//match VAR or NUM and return value
 
 	case SYMBOLS::VAR:
 		if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_W")
-			temp = status->all_outcomes_W;
+			temp = (float)status->all_outcomes_W;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_X")
-			temp = status->all_outcomes_X;
+			temp = (float)status->all_outcomes_X;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Y")
-			temp = status->all_outcomes_Y;
+			temp = (float)status->all_outcomes_Y;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Z")
-			temp = status->all_outcomes_Z;
+			temp = (float)status->all_outcomes_Z;
 		else if (stc.kwd_vect[stc_index] == "ITERATIONS")
-			temp = status->iterations;
+			temp = (float)status->iterations;
 		else if (stc.kwd_vect[stc_index] == "MYSCORE")
 			temp = status->myscore;
 		else {
@@ -367,7 +367,7 @@ void prisoner::expand_sentence() {
 		}
 
 		//matching value
-		temp_value = expand_value();
+		temp_value = (int)expand_value();
 		if (temp_value < 0)
 			error_handling(ERRORS::NEGATIVE_LINE_NUM);
 		else if (temp_bool)
@@ -382,7 +382,7 @@ void prisoner::expand_sentence() {
 		advance(SYMBOLS::GOTO);
 
 		//matching value
-		temp_value = expand_value();
+		temp_value = (int)expand_value();
 		if (temp_value < 0)
 			error_handling(ERRORS::NEGATIVE_LINE_NUM);
 		else if (temp_bool)
@@ -417,7 +417,7 @@ void prisoner::expand_sentence() {
 }
 
 bool prisoner::expand_expression() {
-	int temp_value;
+	float temp_value;
 	OUTS temp_out = OUTS::N;
 	bool rtn_value;
 
@@ -457,9 +457,9 @@ bool prisoner::expand_expression() {
 	return rtn_value;
 }
 
-bool prisoner::expand_cmpop(int value) {
+bool prisoner::expand_cmpop(float value) {
 	SYMBOLS cmp = DFT;
-	int temp_value = -1;
+	float temp_value = -1;
 
 	//matching comparison
 	switch (stc.sym_vect[stc_index])
@@ -506,8 +506,8 @@ bool prisoner::expand_cmpop(int value) {
 	return false;
 }
 
-int prisoner::expand_value() {
-	int temp;
+float prisoner::expand_value() {
+	float temp;
 
 	switch (stc.sym_vect[stc_index])
 	{
@@ -538,7 +538,7 @@ int prisoner::expand_value() {
 	return temp;
 }
 
-int prisoner::expand_asop() {
+float prisoner::expand_asop() {
 	switch (stc.sym_vect[stc_index])
 	{
 	case SYMBOLS::ADD:
@@ -629,7 +629,16 @@ gang_member::gang_member() {
 	stg_index = 0;
 }
 
-gang_member::gang_member(std::string stg) {
+gang_member::gang_member(gang_game_status* sts) {
+	status = sts;
+	last_output = CHOICES::RANDOM;
+
+	stc_index = 0;
+	stg_index = 0;
+}
+
+gang_member::gang_member(std::string stg, gang_game_status* sts) {
+	status = sts;
 	last_output = CHOICES::RANDOM;
 
 	stc_index = 0;
@@ -642,15 +651,15 @@ void gang_member::set_status(gang_game_status* sts) {
 	status = sts;
 }
 
-int gang_member::advance_value(SYMBOLS value) {//match VAR or NUM and return value
-	int temp;
+float gang_member::advance_value(SYMBOLS value) {//match VAR or NUM and return value
+	float temp;
 
 	switch (value)
 	{
 	case SYMBOLS::NUM:
 		try
 		{
-			temp = stoi(stc.kwd_vect[stc_index]);
+			temp = (float)stoi(stc.kwd_vect[stc_index]);
 		}
 		catch (const std::invalid_argument) {
 			error_handling(ERRORS::INVALID_NUM);
@@ -664,23 +673,23 @@ int gang_member::advance_value(SYMBOLS value) {//match VAR or NUM and return val
 
 	case SYMBOLS::VAR:
 		if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_W")
-			temp = status->all_outcomes_W;
+			temp = (float)status->all_outcomes_W;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_X")
-			temp = status->all_outcomes_X;
+			temp = (float)status->all_outcomes_X;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Y")
-			temp = status->all_outcomes_Y;
+			temp = (float)status->all_outcomes_Y;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_Z")
-			temp = status->all_outcomes_Z;
+			temp = (float)status->all_outcomes_Z;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_A")
-			temp = status->all_outcomes_A;
+			temp = (float)status->all_outcomes_A;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_B")
-			temp = status->all_outcomes_B;
+			temp = (float)status->all_outcomes_B;
 		else if (stc.kwd_vect[stc_index] == "ALLOUTCOMES_C")
-			temp = status->all_outcomes_C;
+			temp = (float)status->all_outcomes_C;
 		else if (stc.kwd_vect[stc_index] == "ITERATIONS")
-			temp = status->iterations;
+			temp = (float)status->iterations;
 		else if (stc.kwd_vect[stc_index] == "MYSCORE")
-			temp = status->myscore;
+			temp = (float)status->myscore;
 		else {
 			error_handling(ERRORS::VAR_MISMATCHING);
 			return -1;
@@ -759,10 +768,6 @@ game::OUTS gang_member::advance_outcome(SYMBOLS out) {//match OUT and return out
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//gang_spy
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 gang::gang() {
 	status = NULL;
 	spy_flag = false;
@@ -790,11 +795,9 @@ void gang::set_member(unsigned i, gang_member* m) {
 }
 
 void gang::set_all_member(gang_member* gms) {
-	if (sizeof(gms) == 5) {
-		for (unsigned i = 0; i < 5; ++i) {
-			member_list[i] = (gms + i);
-			member_list[i]->set_status(status);
-		}
+	for (unsigned i = 0; i < 5; ++i) {
+		member_list[i] = (gms + i);
+		member_list[i]->set_status(status);
 	}
 }
 
@@ -818,16 +821,12 @@ bool gang::check_ready() {
 }
 
 void gang::execute_strategies(){
-	CHOICES temp;
-
 	status->betray_num = 0;
 	status->silence_num = 0;
 
-	for (unsigned i; i < 5; ++i) {
+	for (unsigned i = 0; i < 5; ++i) {
 		member_list[i]->execute_strategy();
-		temp = member_list[i]->output();
-		status->choice_list[i] = temp;
-		if (temp == CHOICES::BETRAY) {
+		if (member_list[i]->output() == CHOICES::BETRAY) {
 			status->betray_num += 1;
 		}
 		else

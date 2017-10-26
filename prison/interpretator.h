@@ -161,9 +161,9 @@ protected:
 
 	void advance(SYMBOLS sym); //match current symbol and move forward
 
-	int advance_value(SYMBOLS value); //match VAR or NUM and return value
+	virtual float advance_value(SYMBOLS value); //match VAR or NUM and return value
 		
-	OUTS advance_outcome(SYMBOLS out); //match OUT and return outcome
+	virtual OUTS advance_outcome(SYMBOLS out); //match OUT and return outcome
 
 	void expand_line();
 
@@ -171,11 +171,11 @@ protected:
 
 	bool expand_expression();
 
-	bool expand_cmpop(int value);
+	bool expand_cmpop(float value);
 
-	int expand_value();
+	float expand_value();
 
-	int expand_asop();
+	float expand_asop();
 
 	void jump(int line);
 
@@ -192,11 +192,13 @@ class gang_member :public prisoner {
 public:
 	gang_member();
 
-	gang_member(std::string stg);
+	gang_member(gang_game_status* sts);
+
+	gang_member(std::string stg, gang_game_status* sts);
 
 	void set_status(gang_game_status* sts);
 
-	int gang_member::advance_value(SYMBOLS value);
+	float gang_member::advance_value(SYMBOLS value);
 
 	game::OUTS gang_member::advance_outcome(SYMBOLS out);
 
@@ -204,10 +206,6 @@ protected:
 	gang_game_status* status;
 
 	
-};
-
-class gang_spy :public gang_member {
-
 };
 
 class gang :public game {

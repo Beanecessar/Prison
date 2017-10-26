@@ -13,7 +13,7 @@ public:
 	void compete(std::string path);
 
 private:
-	std::vector<int> score;
+	std::vector<float> score;
 
 	std::mutex lock;
 
@@ -31,6 +31,14 @@ public:
 
 	void set_spy(bool b);
 
+	void set_spy(bool b, int p);
+
 private:
 	bool spy_flag;
+
+	bool change_flag;
+
+	bool find_flag;
+
+	int possibility;
 };
